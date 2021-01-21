@@ -17,7 +17,7 @@ class ProgramSearch(object):
         self.directory = directory
         self.generate_dict = [dict(zip(self.names, i)) for i in self.myData]
         self.result = (chain.from_iterable(
-            (map(partial(path.join, root), filter(filenames, "*.csv")) for root, _, filenames in
+            (map(partial(path.join, root), filter(file_names, "*.csv")) for root, _, file_names in
              walk(self.directory))))
 
     def writer_csv(self):
@@ -30,6 +30,7 @@ class ProgramSearch(object):
                     file_writer.writerow(i)
 
     def reade_csv(self, word):
+
         _opens = 0.0
         _high = 0.0
         _low = 0.0
@@ -37,45 +38,45 @@ class ProgramSearch(object):
         _volume = 0.0
 
         _count_files = 0
-        for file_csv in self.result:
-            with open(file_csv, mode="r+", encoding='utf-8') as w_file:
-                reader = csv.reader(w_file)
 
-                for reader_row in reader:
-                    if reader_row[6] == word:
-                        _count_files += 1
-                        # date, open, high, low, close, volume, Name
-                        # date = reader_row[0]
-                        opens = reader_row[1]
-                        _opens += float(opens)
-                        high = reader_row[2]
-                        _high += float(high)
-                        low = reader_row[3]
-                        _low += float(low)
-                        close = reader_row[4]
-                        _close += float(close)
-                        volume = reader_row[5]
-                        _volume += float(volume)
+        try:
+            for file_csv in self.result:
+                with open(file_csv, mode="r+", encoding='utf-8') as w_file:
+                    reader = csv.reader(w_file)
 
-        return {'open':_opens/_count_files,
-                'high':_high/_count_files,
-                'low':_low/_count_files,
-                'close':_close/_count_files,
-                'volume':_volume/_count_files}
+                    for reader_row in reader:
+                        if reader_row[6] == word:
+                            _count_files += 1
 
-    @property
-    def convert_object(self):
-        return self.directory, self.result, self.generate_dict
+                            opens = reader_row[1]
+                            _opens += float(opens)
+
+                            high = reader_row[2]
+                            _high += float(high)
+
+                            low = reader_row[3]
+                            _low += float(low)
+
+                            close = reader_row[4]
+                            _close += float(close)
+
+            return {'open': _opens / _count_files,
+                    'high': _high / _count_files,
+                    'low': _low / _count_files,
+                    'close': _close / _count_files
+                    }
+        except ZeroDivisionError as e:
+            return f'Ошибка {e} Директория поиска: {self.directory}'
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--directory", type=str, help="Enter directory name")
+    parser.add_argument("directory", type=str, help="Enter directory name")
 
-    parser.add_argument('-w', "--word", type=str, help="Enter searching word")
+    parser.add_argument('word', type=str, help="Enter searching word")
     args = parser.parse_args()
 
     if args.directory and args.word:
-        crawl = ProgramSearch(args.directory)
+        crawl = ProgramSearch("data")
         print(crawl.reade_csv(args.word))
