@@ -3,6 +3,7 @@ from functools import partial
 from itertools import chain
 from os import path, walk
 import csv
+import argparse
 
 
 class ProgramSearch(object):
@@ -68,10 +69,13 @@ class ProgramSearch(object):
 
 
 if __name__ == "__main__":
-    m = ProgramSearch("data")
-    print(m.reade_csv("PL"))
-    # for _ in range(10):
-    #     m.reade_csv()
-    #
-    # for i in m.reade_csv():
-    #     print(i)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--directory", type=str, help="Enter directory name")
+
+    parser.add_argument('-w', "--word", type=str, help="Enter searching word")
+    args = parser.parse_args()
+
+    if args.directory and args.word:
+        crawl = ProgramSearch(args.directory)
+        print(crawl.reade_csv(args.word))
