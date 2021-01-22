@@ -1,11 +1,8 @@
-import unittest
-import os
+import unittest, os, shutil, csv
 from main import ProgramSearch
-import shutil
-import csv
 
 
-class TestProgramSearchMethods(unittest.TestCase):
+class TestProgramSearchMethodsR(unittest.TestCase):
     """Тесты для функции"""
     myData_test = [['2013-02-08', '67.7142', '68.4014', '66.8928', '67.8542', '158168416', 'RUS'],
                    ['2013-02-11', '1.50', '2.50', '3.50', '4.50', '5', 'TEST'],
@@ -23,7 +20,7 @@ class TestProgramSearchMethods(unittest.TestCase):
             for dirpath, dirnames, filenames in os.walk("test"):
                 for dirname in dirnames:
                     dir_name.append(os.path.join(dirpath, dirname))
-            print(dir_name)
+
             for i in range(1):
                 for dirs in dir_name:
                     with open(dirs + "-" + str(i) + ".csv", "w+") as f:
@@ -33,23 +30,29 @@ class TestProgramSearchMethods(unittest.TestCase):
                         ps.names = self.names_test
                         ps.generate_dict()
                         ps.writer_csv()
-        except OSError:
 
-            print("Создать директорию %s не удалось" % path)
+        except OSError as e:
+            return f"Создать директорию {path} не удалось причина {e}"
         else:
-            print("Успешно создана директория %s" % path)
+            return f"Успешно создана директория {path}"
 
+
+class TestProgramSearchMethodsW(unittest.TestCase):
     def test_reade_csv(self):
+
         path_del = os.getcwd() + "/test/"
 
         try:
             ps = ProgramSearch("test")
-            if self.assertTrue(ps.reade_csv("TEST")["open"] == 1.5):
-                shutil.rmtree(path_del)
-        except OSError:
-            print("Удалить директорию %s не удалось" % path_del)
+
+            self.assertTrue(ps.reade_csv("TEST")["open"] == 1.5)
+            shutil.rmtree(path_del)
+
+        except OSError as e:
+            return f"Создать директорию {path_del} не удалось причина {e}"
         else:
-            print("Успешно удалена директория %s" % path_del)
+            return f"Успешно удалена директория {path_del}"
+
 
 
 if __name__ == '__main__':
