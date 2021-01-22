@@ -60,10 +60,10 @@ class ProgramSearch(object):
                             close = reader_row[4]
                             _close += float(close)
 
-            return {'open': _opens / _count_files,
-                    'high': _high / _count_files,
-                    'low': _low / _count_files,
-                    'close': _close / _count_files
+            return {'open': round(_opens / _count_files, 3),
+                    'high': round(_high / _count_files, 3),
+                    'low': round(_low / _count_files, 3),
+                    'close': round(_close / _count_files, 3)
                     }
         except Exception as e:
             return f"Ошибка {e} в директории {self.directory}"

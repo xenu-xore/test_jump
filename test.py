@@ -6,7 +6,7 @@ class TestProgramSearchMethodsR(unittest.TestCase):
     """Тесты для функции"""
     myData_test = [['2013-02-08', '67.7142', '68.4014', '66.8928', '67.8542', '158168416', 'RUS'],
                    ['2013-02-11', '1.50', '2.50', '3.50', '4.50', '5', 'TEST'],
-                   ['2013-02-12', '68.5014', '68.9114', '66.8205', '66.8428', '151829363', 'PL']]
+                   ['2013-02-12', '68.5014', '68.9114', '66.8205', '66.8428', '151829363', 'TEST']]
 
     names_test = ['date', 'open', 'high', 'low', 'close', 'volume', 'Name']
 
@@ -44,8 +44,7 @@ class TestProgramSearchMethodsW(unittest.TestCase):
 
         try:
             ps = ProgramSearch("test")
-
-            self.assertTrue(ps.reade_csv("TEST")["open"] == 1.5)
+            self.assertTrue(ps.reade_csv("TEST")["open"] == 35.001)
             shutil.rmtree(path_del)
 
         except OSError as e:
