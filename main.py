@@ -77,41 +77,45 @@ class ProgramSearch(object):
 
                     for reader_row in reader:
                         fop.append(reader_row)
-                        if fop[0][6] == "Name":
-                            if reader_row[6] == word:
-                                _count_files += 1
+                        try:
+                            if fop[0][6] == "Name":
+                                if reader_row[6] == word:
 
-                                opens = reader_row[1]
-                                _opens += float(opens)
+                                    _count_files += 1
 
-                                high = reader_row[2]
-                                _high += float(high)
+                                    opens = reader_row[1]
+                                    _opens += float(opens)
 
-                                low = reader_row[3]
-                                _low += float(low)
+                                    high = reader_row[2]
+                                    _high += float(high)
 
-                                close = reader_row[4]
-                                _close += float(close)
-                        else:
-                            return f"Нет столбца Name в файле {file_csv}"
+                                    low = reader_row[3]
+                                    _low += float(low)
+
+                                    close = reader_row[4]
+                                    _close += float(close)
+
+                        except Exception as e:
+                            print(e)
+                            raise RuntimeError("Something bad happened") from e
             except IndexError:
                 print(f"В файле {file_csv} нет искомых полей")
 
         try:
             return {'open': round(_opens / _count_files, 3),
-                    'high': round(_high / _count_files, 3),
-                    'low': round(_low / _count_files, 3),
-                    'close': round(_close / _count_files, 3)
-                    }
+                   'high': round(_high / _count_files, 3),
+                   'low': round(_low / _count_files, 3),
+                   'close': round(_close / _count_files, 3)
+                   }
         except Exception as e:
-            return f"Не удалось получить результат {e}"
+            return f"Проверте поля в файле {file_csv} "
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", help="Enter directory name")
-    parser.add_argument('--create_dirs', nargs='?', help='Сreating a chain of stores ')
     parser.add_argument("word", help="Enter searching name")
+    parser.add_argument('--create_dirs', nargs='+', help='Сreating a chain of stores ')
 
     args = parser.parse_args()
 
