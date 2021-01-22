@@ -3,7 +3,7 @@ SearchingCSV
 
 A program that takes two arguments "path to directory" and "word" as input:
 
-    root@root:~/: example.py ~ / data AAPL
+    root@root:~/: main.py ~ / data AAPL
 The first parameter is the path to the directory where the csv files are located, the files in 
 the directory can be located in other sub directories, those structure can be nested,
 
