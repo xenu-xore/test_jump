@@ -69,28 +69,31 @@ class ProgramSearch(object):
         _count_files = 0
 
         for file_csv in self.result:
-            print(file_csv)
+
             try:
                 with open(file_csv, mode="r+", encoding='utf-8') as w_file:
                     reader = csv.reader(w_file)
-                    print(reader.line_num)
+                    fop = []
+
                     for reader_row in reader:
-                        print(reader_row)
-                        if reader_row[6] == word:
-                            _count_files += 1
+                        fop.append(reader_row)
+                        if fop[0][6] == "Name":
+                            if reader_row[6] == word:
+                                _count_files += 1
 
-                            opens = reader_row[1]
-                            _opens += float(opens)
+                                opens = reader_row[1]
+                                _opens += float(opens)
 
-                            high = reader_row[2]
-                            _high += float(high)
+                                high = reader_row[2]
+                                _high += float(high)
 
-                            low = reader_row[3]
-                            _low += float(low)
+                                low = reader_row[3]
+                                _low += float(low)
 
-                            close = reader_row[4]
-                            _close += float(close)
-
+                                close = reader_row[4]
+                                _close += float(close)
+                        else:
+                            return f"Нет столбца Name в файле {file_csv}"
             except IndexError:
                 print(f"В файле {file_csv} нет искомых полей")
 
