@@ -16,13 +16,13 @@ class TestProgramSearchMethodsR(unittest.TestCase):
         try:
             os.makedirs(path)
 
-            dir_name = []
-            for dirpath, dirnames, filenames in os.walk("test"):
-                for dirname in dirnames:
-                    dir_name.append(os.path.join(dirpath, dirname))
+            dir_name_list = []
+            for dir_path, dir_names, filenames in os.walk("test"):
+                for dir_name in dir_names:
+                    dir_name_list.append(os.path.join(dir_path, dir_name))
 
             for i in range(1):
-                for dirs in dir_name:
+                for dirs in dir_name_list:
                     with open(dirs + "-" + str(i) + ".csv", "w+") as f:
                         csv.writer(f)
                         ps = ProgramSearch("test")
@@ -51,7 +51,6 @@ class TestProgramSearchMethodsW(unittest.TestCase):
             return f"Создать директорию {path_del} не удалось причина {e}"
         else:
             return f"Успешно удалена директория {path_del}"
-
 
 
 if __name__ == '__main__':

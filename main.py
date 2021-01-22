@@ -13,6 +13,7 @@ class ProgramSearch(object):
     names = ['date', 'open', 'high', 'low', 'close', 'volume', 'Name']
 
     def __init__(self, directory):
+
         self.directory = directory
         self.result = (chain.from_iterable(
             (map(partial(path.join, root), filter(file_names, "*.csv")) for root, _, file_names in
@@ -22,7 +23,9 @@ class ProgramSearch(object):
         return [dict(zip(self.names, i)) for i in self.myData]
 
     def writer_csv(self):
+
         for file_csv in self.result:
+
             with open(file_csv, mode="r+", encoding='utf-8') as w_file:
                 fieldnames = ['date', 'open', 'high', 'low', 'close', 'volume', 'Name']
                 file_writer = csv.DictWriter(w_file, delimiter=",", lineterminator="\r", fieldnames=fieldnames)
@@ -39,12 +42,14 @@ class ProgramSearch(object):
         _volume = 0.0
 
         _count_files = 0
-        try:
-            for file_csv in self.result:
+
+        for file_csv in self.result:
+            try:
                 with open(file_csv, mode="r+", encoding='utf-8') as w_file:
                     reader = csv.reader(w_file)
 
                     for reader_row in reader:
+
                         if reader_row[6] == word:
                             _count_files += 1
 
@@ -59,14 +64,21 @@ class ProgramSearch(object):
 
                             close = reader_row[4]
                             _close += float(close)
+                        else:
+                            pass
+            except IndexError:
+                print(f"В файле {file_csv} нет искомых полей")
 
+        try:
             return {'open': round(_opens / _count_files, 3),
                     'high': round(_high / _count_files, 3),
                     'low': round(_low / _count_files, 3),
                     'close': round(_close / _count_files, 3)
                     }
         except Exception as e:
-            return f"Ошибка {e} в директории {self.directory}"
+            return f"Не удалось получить результат {e}"
+
+
 
 
 if __name__ == "__main__":
@@ -77,5 +89,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.directory and args.word:
-        crawl = ProgramSearch("data")
+        crawl = ProgramSearch(args.directory)
         print(crawl.reade_csv(args.word))
