@@ -2,13 +2,13 @@ from fnmatch import filter
 from functools import partial
 from itertools import chain
 from os import path, walk
-import csv, argparse
+import csv, argparse, os
 
 
 class ProgramSearch(object):
     myData = [['2013-02-08', '67.7142', '68.4014', '66.8928', '67.8542', '158168416', 'RUS'],
-              ['2013-02-11', '68.0714', '69.2771', '67.6071', '68.5614', '129029425', 'DE'],
-              ['2013-02-12', '68.5014', '68.9114', '66.8205', '66.8428', '151829363', 'PL']]
+              ['2013-02-11', '68.0714', '69.2771', '67.6071', '68.5614', '129029425', 'RUS'],
+              ['2013-02-12', '68.5014', '68.9114', '66.8205', '66.8428', '151829363', 'RUS']]
 
     names = ['date', 'open', 'high', 'low', 'close', 'volume', 'Name']
 
@@ -22,16 +22,33 @@ class ProgramSearch(object):
     def generate_dict(self):
         return [dict(zip(self.names, i)) for i in self.myData]
 
-    def writer_csv(self):
+    def writer_csv(self, create=False):
 
-        for file_csv in self.result:
+        if create:
 
-            with open(file_csv, mode="r+", encoding='utf-8') as w_file:
-                fieldnames = ['date', 'open', 'high', 'low', 'close', 'volume', 'Name']
-                file_writer = csv.DictWriter(w_file, delimiter=",", lineterminator="\r", fieldnames=fieldnames)
-                file_writer.writeheader()
-                for i in self.generate_dict():
-                    file_writer.writerow(i)
+            path = f"{os.getcwd()}/{self.directory}/dir_1/dir_2/dir_3/dir_4/"
+
+            try:
+                os.makedirs(path)
+
+                dir_name_list = []
+                for dir_path, dir_names, filenames in os.walk(self.directory):
+                    for dir_name in dir_names:
+                        dir_name_list.append(os.path.join(dir_path, dir_name))
+
+                for file_csv in dir_name_list:
+                    with open(file_csv + ".csv", mode="w+", encoding='utf-8') as w_file:
+                        fieldnames = ['date', 'open', 'high', 'low', 'close', 'volume', 'Name']
+                        file_writer = csv.DictWriter(w_file, delimiter=",", lineterminator="\r",
+                                                     fieldnames=fieldnames)
+                        file_writer.writeheader()
+                        for i in self.generate_dict():
+                            file_writer.writerow(i)
+
+            except OSError as e:
+                return f"Создать директорию {path} не удалось причина {e}"
+            else:
+                return f"Успешно создана директория {path}"
 
     def reade_csv(self, word):
 
@@ -79,15 +96,15 @@ class ProgramSearch(object):
             return f"Не удалось получить результат {e}"
 
 
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("directory", type=str, help="Enter directory name")
+    parser.add_argument("directory", nargs='+', help="Enter directory name")
+    parser.add_argument('--create_dirs', nargs='+', help='Сreating a chain of stores ')
+    parser.add_argument("word", nargs='+', help="Enter searching name")
 
-    parser.add_argument('word', type=str, help="Enter searching word")
     args = parser.parse_args()
 
-    if args.directory and args.word:
+    if args.directory:
         crawl = ProgramSearch(args.directory)
+        crawl.writer_csv(create=args.create_dirs)
         print(crawl.reade_csv(args.word))

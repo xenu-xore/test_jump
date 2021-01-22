@@ -2,7 +2,7 @@ import unittest, os, shutil, csv
 from main import ProgramSearch
 
 
-class TestProgramSearchMethodsR(unittest.TestCase):
+class TestProgramSearchWriter(unittest.TestCase):
     """Тесты для функции"""
     myData_test = [['2013-02-08', '67.7142', '68.4014', '66.8928', '67.8542', '158168416', 'RUS'],
                    ['2013-02-11', '1.50', '2.50', '3.50', '4.50', '5', 'TEST'],
@@ -37,7 +37,7 @@ class TestProgramSearchMethodsR(unittest.TestCase):
             return f"Успешно создана директория {path}"
 
 
-class TestProgramSearchMethodsW(unittest.TestCase):
+class TestProgramSearchReader(unittest.TestCase):
     def test_reade_csv(self):
 
         path_del = os.getcwd() + "/test/"
